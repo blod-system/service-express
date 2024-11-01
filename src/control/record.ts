@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../prisma"
 import { Prisma } from "@prisma/client";
 import { hasUndefined } from "../utils/hasUndefined"
+import { UpdateRecord } from "./types"
 import * as user from "./user"
 
 //* 新增捐血紀錄
@@ -52,7 +53,7 @@ export async function getBloodRecord(req: Request, res: Response) {
 
 //* 修改捐血紀錄
 export async function updateBloodRecord(req: Request, res: Response) {
-  const data: Prisma.bloodRecordUpdateInput = {
+  const data: UpdateRecord = {
     recordId: req.body.id,
     uid: req.body.uid,
     user_account: req.body.userAccount,
