@@ -7,13 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Record {
-  id        Int      @id @default(autoincrement())
-  account   String
+model user {
+  id               Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  username         String   @unique(map: "username_UNIQUE") @db.VarChar(45)
+  name             String   @db.VarChar(45)
+  password         String   @db.VarChar(45)
+  email            String   @db.VarChar(45)
+  phone            String   @db.VarChar(45)
+  gender           String   @db.VarChar(45)
+  isReminderActive Int      @default(0) @db.TinyInt
+  reminderDate     DateTime @db.Date
+  reminder         Int      @default(0) @db.TinyInt
 }
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  createdAt DateTime @default(now())
+
+model bloodRecord {
+  id           Int      @id @default(autoincrement())
+  uid          Int      @unique(map: "uid_UNIQUE")
+  user_account String   @db.VarChar(45)
+  date         DateTime @db.Time(0)
+  volume_ml    Int
+  report_url   String?  @db.VarChar(255)
+
+  @@map("blood_record")
 }
