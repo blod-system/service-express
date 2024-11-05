@@ -4,7 +4,10 @@ import * as user from '../control/user'
 
 declare module 'express-session' {
   interface SessionData {
-    user?: string
+    user?: {
+      id: number,
+      name: string
+    }
   }
 }
 

@@ -3,7 +3,7 @@ import router from "./router/index"
 import session from 'express-session'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
-
+import { handelReminder } from './service/reminder'
 dotenv.config();
 const app: Express = express();
 const sessionStore = new session.MemoryStore();
@@ -21,6 +21,7 @@ app.use(session({
 }))
 
 cron.schedule('0 0 * * *', () => {
+    handelReminder()
     sessionStore.clear((err) => {
         if (err) {
             console.log('failed to clear session reasons', err);
