@@ -1,7 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import 'express-session'
 import * as user from '../control/user'
-
+import * as record from '../control/record'
+import multer from 'multer'
 declare module 'express-session' {
   interface SessionData {
     user?: {
@@ -26,11 +27,17 @@ function auth(req: Request, res: Response, next: NextFunction) {
 
 export default async function (app: Express) {
   const router = express.Router();
-
+  const upload = multer()
   // user
   const userRouter = express.Router();
-  router.use("/user", auth, userRouter)
+  router.use("/user", userRouter)
   userRouter.get("/userinfo/:id", user.getUserInfo)
+  // record
+  const recordRouter = express.Router();
+  router.use("/record", recordRouter)
+  // upload pdf 
+  recordRouter.post('/upload', upload.single('file'), record.uploadFile)
+  recordRouter.get('/upload/:id', record.getUploadFiles)
 
   app.use(router)
 }

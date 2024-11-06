@@ -63,7 +63,6 @@ export async function handelReminder() {
     }
   })
   Promise.all(reminderResult).then((res) => {
-    console.log("res --- ", res)
     const updateList = reminderList.map((user) => {
       const updateTarget = res.find((item) => item?.accepted[0] === user.email)
       if (updateTarget) {

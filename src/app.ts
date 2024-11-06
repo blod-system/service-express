@@ -4,6 +4,7 @@ import session from 'express-session'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
 import { handelReminder } from './service/reminder'
+
 dotenv.config();
 const app: Express = express();
 const sessionStore = new session.MemoryStore();
@@ -32,7 +33,7 @@ cron.schedule('0 0 * * *', () => {
 })
 
 router(app)
-
+// updatePDF()
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

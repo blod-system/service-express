@@ -41,7 +41,7 @@ export async function createUser(req: Request, res: Response) {
 //* 取得會員資料 ----------------------------------------------------------------
 export async function getUserInfo(req: Request, res: Response) {
   const data = {
-    id: req?.session?.user?.id,
+    id: Number(req?.params.id),
     account: req?.session?.user?.name
   }
 

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { prisma } from "../prisma"
 import { Prisma } from "@prisma/client";
 import { hasUndefined } from "../utils/hasUndefined"
 import { UpdateRecord } from "../types"
@@ -75,5 +74,41 @@ export async function updateBloodRecord(req: Request, res: Response) {
   } catch (error) {
     res.status(500).json({ message: "修改失敗，請稍候重試" })
     console.log("修改捐血紀錄後，更新下次捐血日期失敗", error)
+  }
+}
+
+//* 上傳 PDF
+export async function uploadFile(req: Request, res: Response) {
+  const file = req.file
+  if (!file) {
+    console.log("============= file::::", file)
+
+    res.status(400).send({ message: "No file uploaded", data: file })
+    return
+  }
+
+  try {
+    const result = await recordService.uploadFileToR2(file)
+    if (!result) {
+      throw (result)
+    }
+    console.log("upload result", result)
+    res.status(200).json({ data: result })
+  } catch (error) {
+    res.status(404).json({ message: "upload filed" })
+  }
+}
+
+//* 取得上傳檔案
+export async function getUploadFiles(req: Request, res: Response) {
+  const { id } = req.params;
+
+  try {
+    const fileStream = await recordService.getFileFromR2(id);
+    res.setHeader('Content-Type', 'application/pdf');
+    fileStream.pipe(res);
+  } catch (error) {
+
+    res.status(404).json({ message: 'File not found', error });
   }
 }
