@@ -37,7 +37,7 @@ export async function createBloodRecord(req: Request, res: Response) {
 
 //* 取得捐血紀錄 ----------------------------------------------------------------
 export async function getBloodRecord(req: Request, res: Response) {
-  const data = req.body.uid
+  const data = Number(req.params.uid)
   if (!data) {
     res.status(401).json({ message: "請先登入" })
     return
@@ -81,8 +81,6 @@ export async function updateBloodRecord(req: Request, res: Response) {
 export async function uploadFile(req: Request, res: Response) {
   const file = req.file
   if (!file) {
-    console.log("============= file::::", file)
-
     res.status(400).send({ message: "No file uploaded", data: file })
     return
   }
@@ -92,7 +90,7 @@ export async function uploadFile(req: Request, res: Response) {
     if (!result) {
       throw (result)
     }
-    console.log("upload result", result)
+
     res.status(200).json({ data: result })
   } catch (error) {
     res.status(404).json({ message: "upload filed" })
