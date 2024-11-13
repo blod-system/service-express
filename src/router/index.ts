@@ -31,7 +31,7 @@ export default async function (app: Express) {
   // user
   const userRouter = express.Router();
   router.use("/user", userRouter)
-  userRouter.get("/userinfo/:id", user.getUserInfo)
+  userRouter.get("/userinfo", user.getUserInfo)
   userRouter.post("/register", user.createUser)
   userRouter.put("/update", user.updateUserInfo)
 
