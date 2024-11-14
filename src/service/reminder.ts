@@ -1,5 +1,4 @@
 import { prisma } from '../prisma'
-import { Prisma } from '@prisma/client'
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import * as userService from './user'
@@ -58,10 +57,13 @@ export async function handelReminder() {
   })
   const reminderList = allUsers.filter(user => user.is_reminder_active === 1 && user.reminder !== 1)
   const reminderResult = reminderList.map(async (user) => {
+    if (!user.reminder_date) return
+
     if (date >= user.reminder_date) {
       return await sendEmail({ to: user.email, subject: "可捐血提醒", text: `於 ${user.reminder_date.toLocaleDateString()}，已可再次捐血囉。` })
     }
   })
+
   Promise.all(reminderResult).then((res) => {
     const updateList = reminderList.map((user) => {
       const updateTarget = res.find((item) => item?.accepted[0] === user.email)
