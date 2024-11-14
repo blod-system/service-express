@@ -14,8 +14,8 @@ export async function createUser(req: Request, res: Response) {
     email: req.body.email,
     phone: req.body.phone,
     gender: req.body.gender,
-    is_reminder_active: req.body.isReminderActive,
-    reminder_date: req.body.reminderDate
+    is_reminder_active: 1,
+    reminder_date: null
   }
 
   if (hasUndefined(data)) {
