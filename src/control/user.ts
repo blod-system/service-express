@@ -146,7 +146,7 @@ export async function updateReminderDate(id: number) {
   if (!user || !recentBloodRecords) return null
   const nextDonationDate = new Date(recentBloodRecords[0].date)
 
-  if (user?.gender === "man") {
+  if (user?.gender === "men") {
     const bloodVolumeMl = recentBloodRecords[0].volume_ml
     const monthToAdd = bloodVolumeMl === 250 ? 2 : bloodVolumeMl === 500 ? 3 : 0;
     nextDonationDate.setMonth(nextDonationDate.getMonth() + monthToAdd)
