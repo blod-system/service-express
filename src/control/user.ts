@@ -188,24 +188,3 @@ export async function updateReminderDate(id: number) {
 
   return updateResult
 }
-
-//* 捐血提醒設置 ----------------------------------------------------------------
-export async function setReminder(req: Request, res: Response) {
-  const data = {
-    id: req.body.id,
-    account: req.body.account,
-    isReminderActive: req.body.isReminderActive,
-    reminder: 0 // 已提醒預設為「未提醒」
-  }
-
-  if (!hasUndefined(data)) {
-    res.status(401).json({ message: "設置提醒失敗，資料缺失" })
-  }
-
-  const setReminderResult = await userService.updateUserInfo(data.id, data)
-  if (!setReminderResult) {
-    res.status(401).json({ message: "設置提醒失敗" })
-    return
-  }
-  res.status(200).json({ message: "設置成功" })
-}

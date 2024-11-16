@@ -32,14 +32,16 @@ export default async function (app: Express) {
   const userRouter = express.Router();
   router.use("/user", userRouter)
   userRouter.get("/userinfo", user.getUserInfo)
+  userRouter.get("/logout", user.logoutUser)
   userRouter.post("/register", user.createUser)
+  userRouter.post("/login", user.loginUser)
   userRouter.put("/update", user.updateUserInfo)
 
   // record
   const recordRouter = express.Router();
   router.use("/record", recordRouter)
-  recordRouter.post("/create", record.createBloodRecord)
   recordRouter.get("/:uid", record.getBloodRecord)
+  recordRouter.post("/create", record.createBloodRecord)
   recordRouter.put("/update", record.updateBloodRecord)
 
   // upload pdf
