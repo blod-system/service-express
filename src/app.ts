@@ -26,7 +26,6 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-app.use(express.json());
 
 //* express-session
 app.use(session({
@@ -53,6 +52,7 @@ cron.schedule('0 0 * * *', () => {
     })
 })
 
+app.use(express.json());
 router(app)
 
 const PORT = process.env.PORT || 3000;
