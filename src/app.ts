@@ -11,12 +11,18 @@ const app: Express = express();
 const sessionStore = new session.MemoryStore();
 const sessionSecret = process.env.SESSION_SECRET ?? ''
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: (origin: any, callback: any) => {
+        if (origin === process.env.CLIENT_URL || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error("CORS policy error: Origin not allowed"), false)
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-
 }
+
 app.use(cors(corsOptions))
 app.use(express.json());
 
