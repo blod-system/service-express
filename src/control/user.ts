@@ -29,13 +29,19 @@ export async function createUser(req: Request, res: Response) {
   const registerResult = await userService.registerUser(data)
 
   if (!registerResult) {
-    res.status(401).json({
-      message: "註冊失敗，此會員已存在"
+    res.send({
+      status: 401,
+      message: "註冊失敗，此會員已存在",
+      data: null
     })
     return
   }
+  res.send({
+    status: 200,
+    message: "註冊成功",
+    data: null
+  })
 
-  res.status(200).json({ message: "註冊成功", data: registerResult })
 }
 
 //* 取得會員資料 ----------------------------------------------------------------
@@ -46,18 +52,30 @@ export async function getUserInfo(req: Request, res: Response) {
   }
 
   if (hasUndefined(data)) {
-    res.status(404).json({ message: "請重新登入" })
+    res.send({
+      status: 400,
+      message: "請重新登入",
+      data: null
+    })
     return
   }
 
   const getUserResult = await userService.getUserInfo(data.id!, data.account!)
 
   if (!getUserResult) {
-    res.status(404).json({ message: "查無此帳號" })
+    res.send({
+      status: 404,
+      message: '查無此帳號',
+      data: null
+    })
     return
   }
 
-  res.status(200).json({ message: "", data: { ...getUserResult } })
+  res.send({
+    status: 200,
+    message: '',
+    data: getUserResult
+  })
 }
 
 //* 修改會員資料 ----------------------------------------------------------------
@@ -66,57 +84,99 @@ export async function updateUserInfo(req: Request, res: Response) {
   const data: Prisma.userUpdateInput = { ...req.body }
 
   if (!userId) {
-    res.status(401).json({ message: "登入預期，請重新登入" })
+    res.send({
+      status: 401,
+      message: "登入逾期，請重新登入",
+      data: null
+    })
+
     return
   }
 
   if (hasUndefined(data)) {
-    res.status(401).json({ message: "修改資料不完全，修改失敗" })
+    res.send({
+      status: 401,
+      message: "修改資料不完全，修改失敗",
+      data: null
+    })
+
     return
   }
 
   const updateResult = await userService.updateUserInfo(userId, data)
 
   if (!updateResult) {
-    res.status(401).json({ message: "修改失敗" })
+    res.send({
+      status: 401,
+      message: "修改失敗",
+      data: null
+    })
+    return
   }
-  res.status(200).json({ message: "修改成功", data: updateResult })
+  res.send({
+    status: 200,
+    message: "修改成功",
+    data: updateResult
+  })
+
 }
 
 //* 登入會員 ----------------------------------------------------------------
 export async function loginUser(req: Request, res: Response) {
   const { account, password } = req.body
-  console.log("reqbody", req.body)
-  console.log("account ====", account)
+
   const loginResult = await userService.loginUser(account)
-  console.log("loginResult::::----", loginResult)
   if (!loginResult) {
-    res.status(404).json({ message: "尚未註冊" })
+    res.send({
+      status: 404,
+      message: "尚未註冊",
+      data: null
+    })
     return
   }
 
-  // if (loginResult.password !== password) {
-  //   res.status(401).json({ message: "帳號密碼錯誤" })
-  //   return
-  // }
+  if (loginResult.password !== password) {
+    res.send({
+      status: 401,
+      message: "帳號密碼錯誤",
+      data: null
+    })
 
-  // req.session.user = {
-  //   id: loginResult.id,
-  //   name: loginResult.account
-  // }
+    return
+  }
 
-  res.status(200).json({ message: "登入成功" })
+  req.session.user = {
+    id: loginResult.id,
+    name: loginResult.account
+  }
+
+  res.send({
+    status: 200,
+    message: "登入成功",
+    data: null
+  })
+
 }
 
 //* 登出會員
 export async function logoutUser(req: Request, res: Response) {
   req.session.destroy((err) => {
     if (err) {
-      res.status(500).json({ message: "登出失敗" })
+      res.send({
+        status: 500,
+        message: "登出失敗，請稍候在試",
+        data: null
+      })
+
       return
     }
     res.clearCookie("sid");
-    res.status(200).json({ message: "登出成功" })
+    res.send({
+      status: 200,
+      message: "登出成功",
+      data: null
+    })
+
   });
 }
 

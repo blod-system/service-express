@@ -16,21 +16,40 @@ export async function createBloodRecord(req: Request, res: Response) {
   }
 
   if (hasUndefined(data)) {
-    res.status(401).json({ message: "新增失敗，資料不完整" })
+    res.send({
+      status: 401,
+      message: "新增失敗，資料不完整",
+      data: null
+    })
+
     return
   }
 
   const createResult = await recordService.createBloodRecord(data)
 
   if (!createResult) {
-    res.status(401).json({ message: "新增失敗" })
+    res.send({
+      status: 401,
+      message: "新增失敗",
+      data: null
+    })
+    return
   }
 
   try {
     await user.updateReminderDate(data.uid)
-    res.status(200).json({ message: "新增成功" })
+    res.send({
+      status: 200,
+      message: "新增成功",
+      data: null
+    })
   } catch (error) {
-    res.status(500).json({ message: "新增失敗，請稍候重試" })
+    res.send({
+      status: 500,
+      message: "新增失敗，請稍候重試",
+      data: null
+    })
+
     console.log("新增捐血紀錄後，更新下次捐血日期失敗", error)
   }
 }
@@ -40,16 +59,31 @@ export async function getBloodRecord(req: Request, res: Response) {
   const data = Number(req.params.uid)
 
   if (!data) {
-    res.status(401).json({ message: "請先登入" })
+    res.send({
+      status: 401,
+      message: "請先登入",
+      data: null
+    })
+
     return
   }
 
   const getResult = await recordService.getBloodRecord(data);
 
   if (!getResult) {
-    res.status(404).json({ message: "查無捐血紀錄" })
+    res.send({
+      status: 404,
+      message: "查無捐血紀錄",
+      data: null
+    })
+    return
   }
-  res.status(200).json({ message: "", data: getResult })
+  res.send({
+    status: 200,
+    message: "",
+    data: getResult
+  })
+
 }
 
 //* 修改捐血紀錄 ----------------------------------------------------------------
@@ -57,23 +91,43 @@ export async function updateBloodRecord(req: Request, res: Response) {
   const data: UpdateRecord = { ...req.body }
 
   if (hasUndefined(data)) {
-    res.status(401).json({ message: "修改失敗，資料不完整" })
+    res.send({
+      status: 401,
+      message: "修改失敗，資料不完整",
+      data: null
+    })
+
     return
   }
 
   const updateResult = await recordService.updateBloodRecord(data.id, data);
 
   if (!updateResult) {
-    res.status(404).json({ message: "修改捐血紀錄失敗" })
+    res.send({
+      status: 404,
+      message: "修改捐血紀錄失敗",
+      data: null
+    })
+
   }
 
   try {
     if ('date' in data) {
       await user.updateReminderDate(data.uid)
     }
-    res.status(200).json({ message: "修改成功", data: updateResult })
+    res.send({
+      status: 200,
+      message: "修改成功",
+      data: updateResult
+    })
+
   } catch (error) {
-    res.status(500).json({ message: "修改失敗，請稍候重試" })
+    res.send({
+      status: 500,
+      message: "修改失敗，請稍候重試",
+      data: null
+    })
+
     console.log("修改捐血紀錄後，更新下次捐血日期失敗", error)
   }
 }
@@ -82,7 +136,12 @@ export async function updateBloodRecord(req: Request, res: Response) {
 export async function uploadFile(req: Request, res: Response) {
   const file = req.file
   if (!file) {
-    res.status(400).send({ message: "No file uploaded", data: file })
+    res.send({
+      status: 400,
+      message: "No file update",
+      data: file
+    })
+
     return
   }
 
@@ -91,10 +150,18 @@ export async function uploadFile(req: Request, res: Response) {
     if (!result) {
       throw (result)
     }
+    res.send({
+      status: 200,
+      message: "",
+      data: result
+    })
 
-    res.status(200).json({ data: result })
   } catch (error) {
-    res.status(404).json({ message: "upload filed" })
+    res.send({
+      status: 404,
+      message: "上傳失敗",
+      data: null
+    })
   }
 }
 
@@ -107,7 +174,10 @@ export async function getUploadFiles(req: Request, res: Response) {
     res.setHeader('Content-Type', 'application/pdf');
     fileStream.pipe(res);
   } catch (error) {
-
-    res.status(404).json({ message: 'File not found', error });
+    res.send({
+      status: 404,
+      message: "File not found",
+      data: error
+    })
   }
 }
