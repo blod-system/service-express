@@ -18,8 +18,6 @@ const corsOptions = {
             callback(new Error("CORS policy error: Origin not allowed"), false)
         }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }
 
@@ -33,7 +31,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: { maxAge: 24 * 60 * 60 * 1000, secure: false } // 設置 cookie 有效期
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 設置 cookie 有效期
+        secure: false,
+        sameSite: 'none' // 允許網站請求攜帶 Cookie
+    }
 }))
 
 cron.schedule('0 0 * * *', () => {
