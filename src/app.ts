@@ -3,13 +3,21 @@ import router from "./router/index"
 import session from 'express-session'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import { handelReminder } from './service/reminder'
 
 dotenv.config();
 const app: Express = express();
 const sessionStore = new session.MemoryStore();
 const sessionSecret = process.env.SESSION_SECRET ?? ''
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
 
+}
+app.use(cors(corsOptions))
 app.use(express.json());
 
 //* express-session
