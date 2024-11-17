@@ -8,11 +8,8 @@ import * as recordService from "../service/record"
 //* 新增捐血紀錄 ----------------------------------------------------------------
 export async function createBloodRecord(req: Request, res: Response) {
   const data: Prisma.bloodRecordCreateInput = {
-    uid: req.body.uid,
-    user_account: req.body.userAccount,
-    date: req.body.date,
-    volume_ml: req.body.volumeMl,
-    report_url: req.body.reportUrl ?? null,
+    ...req.body,
+    report_url: req.body.report_url ?? null,
   }
 
   if (hasUndefined(data)) {
