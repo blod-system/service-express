@@ -21,7 +21,7 @@ export async function createBloodRecord(req: Request, res: Response) {
 
     return
   }
-  console.log("data ----> ", data)
+
   try {
     const createResult = await recordService.createBloodRecord(data)
 
@@ -77,6 +77,7 @@ export async function getBloodRecord(req: Request, res: Response) {
       })
       return
     }
+
     res.send({
       status: 200,
       message: "",

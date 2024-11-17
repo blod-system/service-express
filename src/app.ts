@@ -11,14 +11,18 @@ const app: Express = express();
 const sessionStore = new session.MemoryStore();
 const sessionSecret = process.env.SESSION_SECRET ?? ''
 const corsOptions = {
-    origin: (origin: any, callback: any) => {
-        if (origin === process.env.CLIENT_URL || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error("CORS policy error: Origin not allowed"), false)
-        }
-    },
+    // origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    //     const allowedOrigin = process.env.CLIENT_URL;
+    //     if (!origin || origin === allowedOrigin) {
+    //         callback(null, true);
+    //     } else {
+    //         callback(new Error('CORS not allowed'), false);
+    //     }
+    // },
+    origin: true,
     credentials: true,
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
 }
 
 app.use(cors(corsOptions))
@@ -33,9 +37,9 @@ app.use(session({
     store: sessionStore,
     cookie: {
         maxAge: 24 * 60 * 60 * 1000, // 設置 cookie 有效期
-        secure: false,
+        secure: process.env.PRODUCTION === 'production',
         sameSite: 'none' // 允許網站請求攜帶 Cookie
-    }
+    },
 }))
 
 cron.schedule('0 0 * * *', () => {
