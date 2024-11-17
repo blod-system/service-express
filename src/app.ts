@@ -19,7 +19,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: { maxAge: 24 * 60 * 60 * 1000, secure: true } // 設置 cookie 有效期
+    cookie: { maxAge: 24 * 60 * 60 * 1000, secure: false } // 設置 cookie 有效期
 }))
 
 cron.schedule('0 0 * * *', () => {
