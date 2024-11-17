@@ -15,6 +15,7 @@ app.use(express.json());
 //* express-session
 app.use(session({
     secret: sessionSecret,
+    name: 'user',
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
