@@ -21,8 +21,8 @@ export async function createBloodRecord(req: Request, res: Response) {
 
     return
   }
+  console.log("data ----> ", data)
   try {
-
     const createResult = await recordService.createBloodRecord(data)
 
     if (!createResult) {
@@ -40,6 +40,7 @@ export async function createBloodRecord(req: Request, res: Response) {
       message: "新增成功",
       data: null
     })
+
   } catch (error) {
     res.send({
       status: 500,
@@ -47,7 +48,7 @@ export async function createBloodRecord(req: Request, res: Response) {
       data: null
     })
 
-    console.log("新增捐血紀錄後，更新下次捐血日期失敗", error)
+    console.log("新增捐血紀錄及更新下次捐血日期失敗", error)
   }
 }
 
