@@ -21,19 +21,19 @@ export async function createBloodRecord(req: Request, res: Response) {
 
     return
   }
-
-  const createResult = await recordService.createBloodRecord(data)
-
-  if (!createResult) {
-    res.send({
-      status: 401,
-      message: "新增失敗",
-      data: null
-    })
-    return
-  }
-
   try {
+
+    const createResult = await recordService.createBloodRecord(data)
+
+    if (!createResult) {
+      res.send({
+        status: 401,
+        message: "新增失敗",
+        data: null
+      })
+      return
+    }
+
     await user.updateReminderDate(data.uid)
     res.send({
       status: 200,
@@ -64,23 +64,26 @@ export async function getBloodRecord(req: Request, res: Response) {
 
     return
   }
+  try {
 
-  const getResult = await recordService.getBloodRecord(data);
+    const getResult = await recordService.getBloodRecord(data);
 
-  if (!getResult) {
+    if (!getResult) {
+      res.send({
+        status: 404,
+        message: "查無捐血紀錄",
+        data: null
+      })
+      return
+    }
     res.send({
-      status: 404,
-      message: "查無捐血紀錄",
-      data: null
+      status: 200,
+      message: "",
+      data: getResult
     })
-    return
+  } catch (error) {
+    console.log(error)
   }
-  res.send({
-    status: 200,
-    message: "",
-    data: getResult
-  })
-
 }
 
 //* 修改捐血紀錄 ----------------------------------------------------------------
@@ -97,18 +100,17 @@ export async function updateBloodRecord(req: Request, res: Response) {
     return
   }
 
-  const updateResult = await recordService.updateBloodRecord(data.id, data);
-
-  if (!updateResult) {
-    res.send({
-      status: 404,
-      message: "修改捐血紀錄失敗",
-      data: null
-    })
-
-  }
-
   try {
+    const updateResult = await recordService.updateBloodRecord(data.id, data);
+
+    if (!updateResult) {
+      res.send({
+        status: 404,
+        message: "修改捐血紀錄失敗",
+        data: null
+      })
+    }
+
     if ('date' in data) {
       await user.updateReminderDate(data.uid)
     }
@@ -162,19 +164,19 @@ export async function uploadFile(req: Request, res: Response) {
   }
 }
 
-//* 取得上傳檔案
-export async function getUploadFiles(req: Request, res: Response) {
-  const { id } = req.params;
+//* 取得上傳檔案 (暫時不需要)
+// export async function getUploadFiles(req: Request, res: Response) {
+//   const { id } = req.params;
 
-  try {
-    const fileStream = await recordService.getFileFromR2(id);
-    res.setHeader('Content-Type', 'application/pdf');
-    fileStream.pipe(res);
-  } catch (error) {
-    res.send({
-      status: 404,
-      message: "File not found",
-      data: error
-    })
-  }
-}
+//   try {
+//     const fileStream = await recordService.getFileFromR2(id);
+//     res.setHeader('Content-Type', 'application/pdf');
+//     fileStream.pipe(res);
+//   } catch (error) {
+//     res.send({
+//       status: 404,
+//       message: "File not found",
+//       data: error
+//     })
+//   }
+// }
