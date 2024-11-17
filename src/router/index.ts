@@ -16,7 +16,7 @@ function auth(req: Request, res: Response, next: NextFunction) {
   if (req.session.user) {
     next()
   } else {
-    console.log("req.session.user ---", req.session.user)
+    console.log("req.session.user ---", req.session)
     res.send({
       status: 401,
       message: '登入逾期',
