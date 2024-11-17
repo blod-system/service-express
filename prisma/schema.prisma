@@ -23,7 +23,7 @@ model user {
 
 model bloodRecord {
   id           Int      @id @default(autoincrement())
-  uid          Int      @unique(map: "uid_UNIQUE")
+  uid          Int
   user_account String   @db.VarChar(45)
   date         DateTime @db.Date
   volume_ml    Int
