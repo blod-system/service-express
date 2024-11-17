@@ -16,12 +16,11 @@ function auth(req: Request, res: Response, next: NextFunction) {
   if (req.session.user) {
     next()
   } else {
-    console.log("401")
+    console.log("req.session.user ---", req.session.user)
     res.status(401).send({
       message: "登入逾期"
     })
     next()
-    return
   }
 }
 
