@@ -9,8 +9,10 @@ export async function registerUser(data: Prisma.userCreateInput) {
 
 //* 登入會員 ----------------------------------------------------------------
 export async function loginUser(account: string) {
+  console.log(account)
   const result = await prisma.user.findUnique({ where: { account: account } })
   return result
+
 }
 
 //* 取得會員資料 ----------------------------------------------------------------

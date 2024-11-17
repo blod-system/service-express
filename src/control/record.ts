@@ -38,6 +38,7 @@ export async function createBloodRecord(req: Request, res: Response) {
 //* 取得捐血紀錄 ----------------------------------------------------------------
 export async function getBloodRecord(req: Request, res: Response) {
   const data = Number(req.params.uid)
+
   if (!data) {
     res.status(401).json({ message: "請先登入" })
     return

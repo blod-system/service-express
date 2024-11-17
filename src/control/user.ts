@@ -86,23 +86,24 @@ export async function updateUserInfo(req: Request, res: Response) {
 //* 登入會員 ----------------------------------------------------------------
 export async function loginUser(req: Request, res: Response) {
   const { account, password } = req.body
-
+  console.log("reqbody", req.body)
+  console.log("account ====", account)
   const loginResult = await userService.loginUser(account)
-
+  console.log("loginResult::::----", loginResult)
   if (!loginResult) {
     res.status(404).json({ message: "尚未註冊" })
     return
   }
 
-  if (loginResult.password !== password) {
-    res.status(401).json({ message: "帳號密碼錯誤" })
-    return
-  }
+  // if (loginResult.password !== password) {
+  //   res.status(401).json({ message: "帳號密碼錯誤" })
+  //   return
+  // }
 
-  req.session.user = {
-    id: loginResult.id,
-    name: loginResult.account
-  }
+  // req.session.user = {
+  //   id: loginResult.id,
+  //   name: loginResult.account
+  // }
 
   res.status(200).json({ message: "登入成功" })
 }
