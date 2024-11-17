@@ -162,11 +162,12 @@ export async function loginUser(req: Request, res: Response) {
       name: loginResult.account
     }
 
-    res.status(200).json({
+    res.send({
       status: 200,
       message: "登入成功",
       data: null
     })
+
   } catch (error) {
     console.log(error)
   }
