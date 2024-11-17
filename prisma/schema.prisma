@@ -25,7 +25,7 @@ model bloodRecord {
   id           Int      @id @default(autoincrement())
   uid          Int      @unique(map: "uid_UNIQUE")
   user_account String   @db.VarChar(45)
-  date         DateTime @db.Time(0)
+  date         DateTime @db.Date
   volume_ml    Int
   report_url   String?  @db.VarChar(255)
 
