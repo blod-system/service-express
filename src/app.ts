@@ -24,7 +24,7 @@ const corsOptions = {
     // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
 }
-
+app.set('trust proxy', 1); // 让 Express 信任代理
 app.use(cors(corsOptions))
 
 //* express-session
@@ -51,6 +51,7 @@ cron.schedule('0 0 * * *', () => {
         }
     })
 })
+
 
 app.use(express.json());
 router(app)
