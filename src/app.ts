@@ -52,13 +52,14 @@ cron.schedule('0 0 * * *', () => {
     })
 })
 
+app.use(express.json());
+
+router(app)
 app.use((err: Error, req: Request, res: Response) => {
     console.error(err.stack)
     res.status(500).send('Something broke!')
 })
-app.use(express.json());
 
-router(app)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
