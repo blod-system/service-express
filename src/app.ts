@@ -11,7 +11,6 @@ const app: Express = express();
 const sessionStore = new session.MemoryStore();
 const sessionSecret = process.env.SESSION_SECRET ?? ''
 const corsOptions = {
-    // origin: true,
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         const allowedOrigin = process.env.CLIENT_URL;
         if (!origin || origin === allowedOrigin) {
@@ -21,10 +20,8 @@ const corsOptions = {
         }
     },
     credentials: true,
-    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    // allowedHeaders: ['Content-Type', 'Authorization'],
 }
-
+app.set('trust proxy', 1); // 部屬平台 Zeabur 有使用 proxy ， Set-Cookie 失敗，需要讓 Express 信任代理
 app.use(cors(corsOptions))
 
 //* express-session
@@ -51,6 +48,7 @@ cron.schedule('0 0 * * *', () => {
         }
     })
 })
+
 
 app.use(express.json());
 router(app)
