@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response } from 'express';
 import router from "./router/index"
 import session from 'express-session'
 import cron from 'node-cron'
@@ -49,9 +49,14 @@ cron.schedule('0 0 * * *', () => {
     })
 })
 
-
 app.use(express.json());
+
 router(app)
+app.use((err: Error, req: Request, res: Response) => {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+})
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
