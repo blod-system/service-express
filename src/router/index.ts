@@ -22,7 +22,7 @@ function auth(req: Request, res: Response, next: NextFunction) {
       message: '登入逾期',
       data: null
     })
-    next()
+    return
   }
 }
 
