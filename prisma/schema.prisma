@@ -18,16 +18,16 @@ model user {
   is_reminder_active Int       @default(0) @db.TinyInt
   reminder_date      DateTime? @db.Date
   reminder           Int       @default(0) @db.TinyInt
-  birthday           DateTime  @db.Date
+  birthday           String    @db.VarChar(45)
 }
 
 model bloodRecord {
-  id           Int      @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   uid          Int
-  user_account String   @db.VarChar(45)
-  date         DateTime @db.Date
+  user_account String  @db.VarChar(45)
+  date         String  @db.VarChar(45)
   volume_ml    Int
-  report_url   String?  @db.VarChar(255)
+  report_url   String? @db.VarChar(255)
 
   @@map("blood_record")
 }

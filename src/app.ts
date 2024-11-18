@@ -21,7 +21,7 @@ const corsOptions = {
     },
     credentials: true,
 }
-app.set('trust proxy', 1); // 部屬平台 Zeabur 有使用 proxy ， Set-Cookie 失敗，需要讓 Express 信任代理
+app.set('trust proxy', 1); // 让 Express 信任代理
 app.use(cors(corsOptions))
 
 //* express-session
