@@ -47,36 +47,46 @@ export async function sendEmail({ to, subject, text }: MailOptions) {
  * 4.發送 email 提醒
  */
 
-export async function handelReminder() {
+export async function handleReminder() {
   const date = new Date();
   const allUsers = await prisma.user.findMany({
     where: {
       is_reminder_active: 1,
-      reminder: 0
+      reminder: 0,
+      reminder_date: { not: null, lte: new Date() }
     },
   })
-  const reminderList = allUsers.filter(user => user.is_reminder_active === 1 && user.reminder !== 1)
-  const reminderResult = reminderList.map(async (user) => {
-    if (!user.reminder_date) return
 
-    if (date >= user.reminder_date) {
-      return await sendEmail({ to: user.email, subject: "可捐血提醒", text: `於 ${user.reminder_date.toLocaleDateString()}，已可再次捐血囉。` })
-    }
-  })
+  const reminderResult = await Promise.all(allUsers.map(async (user) => {
+    if (date < user.reminder_date!) return null
 
-  Promise.all(reminderResult).then((res) => {
-    const updateList = reminderList.map((user) => {
-      const updateTarget = res.find((item) => item?.accepted[0] === user.email)
-      if (updateTarget) {
-        return {
-          ...user,
-          reminder: 1
-        }
+    try {
+      const emailResult = await sendEmail(
+        {
+          to: user.email,
+          subject: "可捐血提醒",
+          text: `於 ${user.reminder_date!.toLocaleDateString()}，已可再次捐血囉。`
+        })
+
+      return {
+        userId: user.id,
+        email: user.email,
+        emailSent: emailResult?.accepted.includes(user.email)
       }
-    })
+    } catch (error) {
+      console.log(`${user.email} 發送提醒失敗，失敗原因：`, error)
+      return null
+    }
+  }))
 
-    updateList.forEach((item) => {
-      userService.updateUserInfo(item?.id!, { reminder: item?.reminder })
-    })
-  })
+  const updateList = reminderResult
+    .filter(result => result?.emailSent)
+    .map(result => userService.updateUserInfo(result!.userId, { reminder: 1 }))
+
+  try {
+    await Promise.all(updateList)
+
+  } catch (error) {
+    console.log("update userInfo reminder fail")
+  }
 }
