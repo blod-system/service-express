@@ -11,18 +11,15 @@ const app: Express = express();
 const sessionStore = new session.MemoryStore();
 const sessionSecret = process.env.SESSION_SECRET ?? ''
 const corsOptions = {
-    // origin: true,
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        const allowedOrigin = process.env.CLIENT_URL;
-        if (!origin || origin === allowedOrigin) {
+        const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5173'];
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('CORS not allowed'), false);
         }
     },
     credentials: true,
-    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    // allowedHeaders: ['Content-Type', 'Authorization'],
 }
 app.set('trust proxy', 1); // 让 Express 信任代理
 app.use(cors(corsOptions))
